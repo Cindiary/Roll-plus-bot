@@ -128,3 +128,6 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Add the config json to the git ignore so we don't accidentally upload the Twitch api key in the future
+config.json
