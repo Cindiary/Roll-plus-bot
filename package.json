@@ -1,0 +1,13 @@
+{
+  "name": "roll-plus-bot",
+  "version": "1.0.0",
+  "description": "A bot for the Roll Plus Bond charity stream",
+  "main": "index.js",
+  "scripts": {
+    "run": "node ."
+  },
+  "author": "Cindi Peeters",
+  "dependencies": {
+    "ws": "^8.16.0"
+  }
+}

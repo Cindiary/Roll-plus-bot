@@ -1,0 +1,9 @@
+{ "oAuth": "Twitch api key goes here",
+  "nick": "rollplusbond",
+  "channel": "rollplusbond",
+  "staticCommandsLocation": "./static commands.csv",
+  "gamesLocation": "./games.csv",
+  "streamStart": 1709269200,
+  "gameDuration":  14400,
+  "numberOfGames": 18
+}
