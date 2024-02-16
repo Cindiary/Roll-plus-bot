@@ -40,19 +40,40 @@ const commandsList = `${commandNames.slice(0, -1).join(", ")} or ${commandNames.
 console.log("Games", games);
 console.log("Static commands", staticCommands);
 
-const socket = new WebSocket("wss://irc-ws.chat.twitch.tv:443");
+var socket = null;
+connect();
 
-socket.addEventListener("open", function() {
-  //Authenticate and join the channel
-  socket.send(`PASS oauth:${config.oAuth}`);
-  socket.send(`NICK ${config.nick}`);
-  socket.send(`JOIN #${config.channel}`);
+function connect() {
+  socket = new WebSocket("wss://irc-ws.chat.twitch.tv:443");
+  
+  socket.addEventListener("open", function() {
+    //Authenticate and join the channel
+    socket.send(`PASS oauth:${config.oAuth}`);
+    socket.send(`NICK ${config.nick}`);
+    socket.send(`JOIN #${config.channel}`);
+  
+    // sendMessage("Bot started!");
+  });
+  
+  
+  socket.addEventListener("message", onMessage);
+  
+  socket.addEventListener("error", function(event) {
+    console.log("Error", event);
+  });
+  
+  socket.addEventListener("close", function(event) {
+    console.log("Connection closed", event);
+    
+    setTimeout(function() {
+      console.log("Reconnecting");
+      connect();
+    }, 10 * second);
+  });
 
-  // sendMessage("Bot started!");
-});
+}
 
-
-socket.addEventListener("message", function(event) {
+function onMessage(event) {
   const data = event.data;
   console.log(data);
 
@@ -66,7 +87,7 @@ socket.addEventListener("message", function(event) {
       sendMessage(response);
     }
   }
-});
+}
 
 
 function sendMessage(message) {

@@ -4,6 +4,6 @@
   "staticCommandsLocation": "./static commands.csv",
   "gamesLocation": "./games.csv",
   "streamStart": 1709269200,
-  "gameDuration":  14400,
+  "gameDuration": 14400,
   "numberOfGames": 18
 }
