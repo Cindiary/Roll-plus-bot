@@ -11,7 +11,7 @@ const streamStartTime = config.streamStart * second; //Epoch time that the strea
 const gameDuration = config.gameDuration * second;
 
 // const streamStartTime = Date.now() + 2 * minute;
-// const gameDuration = 2 * hour;
+// const gameDuration = 2 * minute;
 
 function loadCsv(path, columns) {
   return fs.readFileSync(path).toString()
@@ -34,11 +34,14 @@ const staticCommandLookup =
 
 const vodResponse = staticCommandLookup["vod"];
 
-const commandNames = [ "!game", "!next" ].concat(staticCommands.map(item => item.command));
+const commandNames = [ "!game", "!next", "!previous" ].concat(staticCommands.map(item => item.command));
 const commandsList = `${commandNames.slice(0, -1).join(", ")} or ${commandNames.at(-1)}`;
 
 console.log("Games", games);
 console.log("Static commands", staticCommands);
+
+// repeat("!game", 30 * minute, 10 * second);
+// repeat("!donate", 30 * minute, 15 * minute);
 
 var socket = null;
 connect();
@@ -59,23 +62,28 @@ function connect() {
   socket.addEventListener("message", onMessage);
   
   socket.addEventListener("error", function(event) {
-    console.log("Error", event);
+    console.warn("Error", event);
   });
   
   socket.addEventListener("close", function(event) {
-    console.log("Connection closed", event);
+    console.warn("Connection closed", event);
     
     setTimeout(function() {
       console.log("Reconnecting");
       connect();
     }, 10 * second);
   });
-
 }
+
+function sendMessage(message) {
+  console.log(`Sending the message "${message}"`);
+  socket.send(`PRIVMSG #${config.channel} :${message}`);
+}
+
 
 function onMessage(event) {
   const data = event.data;
-  console.log(data);
+  console.log(data.trim());
 
   if(data.includes("PING")) socket.send("PONG");
 
@@ -90,11 +98,6 @@ function onMessage(event) {
 }
 
 
-function sendMessage(message) {
-  socket.send(`PRIVMSG #${config.channel} :${message}`);
-}
-
-
 function handleCommand(command) {
   const currentGameIndex = Math.floor(( Date.now() - streamStartTime ) / gameDuration);
 
@@ -106,7 +109,7 @@ function handleCommand(command) {
       if(currentGameIndex < 0) {
         return `The stream will start in ${formatTimeSpan(streamStartTime - Date.now())}`;
       } else if (currentGameIndex < games.length) {
-        return `The current game is ${describeGame(games[currentGameIndex])}`;
+        return `The current game is ${describeGame(games[currentGameIndex], "is being")}`;
       } else {
         return `The stream is over. ${vodResponse}`;
       }
@@ -118,12 +121,28 @@ function handleCommand(command) {
         const nextGameIndex = Math.max(currentGameIndex + 1, 0);
         const nextGameStartTime = streamStartTime + nextGameIndex * gameDuration; 
 
-        return `The next game will be ${describeGame(games[nextGameIndex])}. It will start in ${formatTimeSpan(nextGameStartTime - Date.now())}`;
+        return `The next game will be ${describeGame(games[nextGameIndex], "will be")}. It will start in ${formatTimeSpan(nextGameStartTime - Date.now())}`;
       } else if (currentGameIndex == games.length - 1) {
         return `This is the last game of the stream. ${vodResponse}`;
       } else {
         return `The stream is over. ${vodResponse}`;
       }
+    
+      case "last":
+      case "lastgame":
+      case "last game":
+      case "previous":
+      case "previousgame":
+      case "previous game":
+        if(currentGameIndex > 0) {
+          const lastGameIndex = Math.min(currentGameIndex - 1, games.length - 1);
+          
+          return `The previous game was ${describeGame(games[lastGameIndex], "was")}.`;
+        } else if (currentGameIndex == 0) {
+          return `This is the first game of the stream`;
+        } else {
+          return `The stream will start in ${formatTimeSpan(streamStartTime - Date.now())}`;
+        }
     
     case "help":
       return `You can use one of the following commands: ${commandsList}`;
@@ -139,11 +158,11 @@ function handleCommand(command) {
 }
 
 
-function describeGame(game) {
+function describeGame(game, playedTense) {
   if(game.link) {
-    return `${game.name} which you can find over at ${game.link} and is being played by ${game.players}`;
+    return `${game.name} which you can find over at ${game.link} and ${playedTense} played by ${game.players}`;
   } else {
-    return `${game.name} and is being played by ${game.players}`;
+    return `${game.name} and ${playedTense} played by ${game.players}`;
   }
 }
 
@@ -164,5 +183,16 @@ function formatTimeSpan(span) {
   }  else {
     return `${minutes} minutes`
   }
+}
+
+
+function repeat(command, period, offset) {
+  // console.log(`Repeating the ${command} command every ${formatTimeSpan(period)}`);
+
+  setTimeout(function() {
+    // console.log(`Triggering ${command} command`);
+    sendMessage(handleCommand(command));
+    repeat(command, period, period);
+  }, offset);
 }
 
