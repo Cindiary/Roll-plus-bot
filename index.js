@@ -16,14 +16,35 @@ const gameDuration = config.gameDuration * second;
 function loadCsv(path, columns) {
   return fs.readFileSync(path).toString()
         .split("\n")
-        .splice(1, config.numberOfGames)
+        .splice(1)
         .map(line => line.split(";").map(str => str.trim()))
         .filter(items => items.length >= columns);
 }
 
+const players =
+  loadCsv(config.playersLocation, 5)
+  .map(items => ({ gameNr: parseInt(items[0]), facilitator: items[1].toLowerCase() == "true", name: items[3], pronouns: items[4] }));
+
 const games = 
   loadCsv(config.gamesLocation, 3)
-  .map(items => ({ name: items[0], link: items[1], players: items[2] }));
+  .splice(0, config.numberOfGames)
+  .map(items => ({ number: items[0], name: items[1], link: items[2], facilitator: { name: "Facilitator", pronouns: "" }, players: [] }));
+
+
+for(player of players) {
+  if(player.gameNr < 1 || player.gameNr > games.length) {
+    console.log(`Player ${player} has invalid game nr: ${player.gameNr}`);
+    continue;
+  }
+  const game = games[player.gameNr - 1];
+
+  if(player.facilitator) {
+    game.facilitator = player;
+  } else {
+    game.players.push(player);
+  }
+}
+
 
 const staticCommands =
   loadCsv(config.staticCommandsLocation, 3)
@@ -37,11 +58,12 @@ const vodResponse = staticCommandLookup["vod"];
 const commandNames = [ "!game", "!next", "!previous" ].concat(staticCommands.map(item => item.command));
 const commandsList = `${commandNames.slice(0, -1).join(", ")} or ${commandNames.at(-1)}`;
 
+console.log("Players", players);
 console.log("Games", games);
 console.log("Static commands", staticCommands);
 
-// repeat("!game", 30 * minute, 10 * second);
-// repeat("!donate", 30 * minute, 15 * minute);
+repeat("!game", 30 * minute, 10 * second);
+repeat("!donate", 30 * minute, 15 * minute);
 
 var socket = null;
 connect();
@@ -159,11 +181,15 @@ function handleCommand(command) {
 
 
 function describeGame(game, playedTense) {
-  if(game.link) {
-    return `${game.name} which you can find over at ${game.link} and ${playedTense} played by ${game.players}`;
-  } else {
-    return `${game.name} and ${playedTense} played by ${game.players}`;
-  }
+  const gameAndLink = game.link ? `${game.name} which you can find over at ${game.link}` : game.name;
+  const playersDescription = `${game.players.slice(0, -1).map(describePlayer).join(", ")} and ${describePlayer(game.players.at(-1))}`
+
+  return `${gameAndLink} and ${playedTense} facilitated by ${describePlayer(game.facilitator)} and played by ${playersDescription}`;
+}
+
+
+function describePlayer(player) {
+  return player.pronouns ? `${player.name} (${player.pronouns})` : player.name;
 }
 
 
