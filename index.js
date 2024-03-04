@@ -22,14 +22,13 @@ function loadCsv(path, columns) {
 }
 
 const players =
-  loadCsv(config.playersLocation, 5)
-  .map(items => ({ gameNr: parseInt(items[0]), facilitator: items[1].toLowerCase() == "true", name: items[3], pronouns: items[4] }));
+  loadCsv(config.playersLocation, 4)
+  .map(items => ({ gameNr: parseInt(items[0]), facilitator: items[1].toLowerCase() == "true", name: items[2], pronouns: items[3] }));
 
 const games = 
   loadCsv(config.gamesLocation, 3)
   .splice(0, config.numberOfGames)
-  .map(items => ({ number: items[0], name: items[1], link: items[2], facilitator: { name: "Facilitator", pronouns: "" }, players: [] }));
-
+  .map(items => ({ name: items[1], link: items[2], facilitator: { name: "Facilitator", pronouns: "" }, players: [] }));
 
 for(player of players) {
   if(player.gameNr < 1 || player.gameNr > games.length) {
@@ -45,7 +44,6 @@ for(player of players) {
   }
 }
 
-
 const staticCommands =
   loadCsv(config.staticCommandsLocation, 3)
   .map(items => ({ command: items[0], altCommands: items[1].split(",").filter(str => str), response: items[2] }));
@@ -58,12 +56,11 @@ const vodResponse = staticCommandLookup["vod"];
 const commandNames = [ "!game", "!next", "!previous" ].concat(staticCommands.map(item => item.command));
 const commandsList = `${commandNames.slice(0, -1).join(", ")} or ${commandNames.at(-1)}`;
 
-console.log("Players", players);
 console.log("Games", games);
 console.log("Static commands", staticCommands);
 
-repeat("!game", 30 * minute, 10 * second);
-repeat("!donate", 30 * minute, 15 * minute);
+// repeat("!game", 30 * minute, 10 * second);
+// repeat("!donate", 30 * minute, 15 * minute);
 
 var socket = null;
 connect();
@@ -131,7 +128,7 @@ function handleCommand(command) {
       if(currentGameIndex < 0) {
         return `The stream will start in ${formatTimeSpan(streamStartTime - Date.now())}`;
       } else if (currentGameIndex < games.length) {
-        return `The current game is ${describeGame(games[currentGameIndex], "is being")}`;
+        return `The current game is ${describeGame(games[currentGameIndex], "is")}`;
       } else {
         return `The stream is over. ${vodResponse}`;
       }
@@ -150,21 +147,21 @@ function handleCommand(command) {
         return `The stream is over. ${vodResponse}`;
       }
     
-      case "last":
-      case "lastgame":
-      case "last game":
-      case "previous":
-      case "previousgame":
-      case "previous game":
-        if(currentGameIndex > 0) {
-          const lastGameIndex = Math.min(currentGameIndex - 1, games.length - 1);
-          
-          return `The previous game was ${describeGame(games[lastGameIndex], "was")}.`;
-        } else if (currentGameIndex == 0) {
-          return `This is the first game of the stream`;
-        } else {
-          return `The stream will start in ${formatTimeSpan(streamStartTime - Date.now())}`;
-        }
+    case "last":
+    case "lastgame":
+    case "last game":
+    case "previous":
+    case "previousgame":
+    case "previous game":
+      if(currentGameIndex > 0) {
+        const lastGameIndex = Math.min(currentGameIndex - 1, games.length - 1);
+        
+        return `The previous game was ${describeGame(games[lastGameIndex], "was")}.`;
+      } else if (currentGameIndex == 0) {
+        return `This is the first game of the stream`;
+      } else {
+        return `The stream will start in ${formatTimeSpan(streamStartTime - Date.now())}`;
+      }
     
     case "help":
       return `You can use one of the following commands: ${commandsList}`;
@@ -180,11 +177,11 @@ function handleCommand(command) {
 }
 
 
-function describeGame(game, playedTense) {
+function describeGame(game, willTense) {
   const gameAndLink = game.link ? `${game.name} which you can find over at ${game.link}` : game.name;
   const playersDescription = `${game.players.slice(0, -1).map(describePlayer).join(", ")} and ${describePlayer(game.players.at(-1))}`
 
-  return `${gameAndLink} and ${playedTense} facilitated by ${describePlayer(game.facilitator)} and played by ${playersDescription}`;
+  return `${gameAndLink} and ${willTense} facilitated by ${describePlayer(game.facilitator)} and joined by ${playersDescription}`;
 }
 
 
