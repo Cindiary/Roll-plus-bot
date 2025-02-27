@@ -131,3 +131,5 @@ dist
 
 # Add the config json to the git ignore so we don't accidentally upload the Twitch api key in the future
 config.json
+# Libre office lock files
+.~lock*

@@ -7,11 +7,25 @@ const second = 1000;
 const minute  = 60 * second;
 const hour = 60 * minute;
 
+const repeatingCommands = [ "!donate", "!game" ];
+
+// Add/Remove the first slash on the next line to switch between stream time (//*/) and test settings (/*/)
+//*/
+
+const channel = config.channel; //The channel that the bot should operate in
 const streamStartTime = config.streamStart * second; //Epoch time that the stream starts, taken from https://hammertime.cyou/
 const gameDuration = config.gameDuration * second;
+const commandPeriod = config.commandPeriod * second;
 
-// const streamStartTime = Date.now() + 2 * minute;
-// const gameDuration = 2 * minute;
+/*/
+
+// Alternate settings for testing
+const channel = "cindi_";
+const gameDuration = 30 * second;
+const streamStartTime = Date.now() + gameDuration;
+const commandPeriod = 30 * second;
+
+//*/
 
 function loadCsv(path, columns) {
   return fs.readFileSync(path).toString()
@@ -26,9 +40,8 @@ const players =
   .map(items => ({ gameNr: parseInt(items[0]), facilitator: items[1].toLowerCase() == "true", name: items[2], pronouns: items[3] }));
 
 const games = 
-  loadCsv(config.gamesLocation, 3)
-  .splice(0, config.numberOfGames)
-  .map(items => ({ name: items[1], link: items[2], facilitator: { name: "Facilitator", pronouns: "" }, players: [] }));
+  loadCsv(config.gamesLocation, 4)
+  .map(items => ({ name: items[1], link: items[2], contentWarnings: items[3], facilitator: { name: "Facilitator", pronouns: "" }, players: [] }));
 
 for(player of players) {
   if(player.gameNr < 1 || player.gameNr > games.length) {
@@ -53,14 +66,16 @@ const staticCommandLookup =
 
 const vodResponse = staticCommandLookup["vod"];
 
-const commandNames = [ "!game", "!next", "!previous" ].concat(staticCommands.map(item => item.command));
+const commandNames = [ "!game", "!next", "!previous", "!content warnings" ].concat(staticCommands.map(item => item.command));
 const commandsList = `${commandNames.slice(0, -1).join(", ")} or ${commandNames.at(-1)}`;
+const exclamationMarksRegex = /^[\s\!1]+$/;
 
 console.log("Games", games);
 console.log("Static commands", staticCommands);
 
-// repeat("!game", 30 * minute, 10 * second);
-// repeat("!donate", 30 * minute, 15 * minute);
+for (let index = 0; index < repeatingCommands.length; index++) {
+  repeat(repeatingCommands[index], commandPeriod, 10 * second + index * commandPeriod / repeatingCommands.length);
+}
 
 var socket = null;
 connect();
@@ -72,7 +87,7 @@ function connect() {
     //Authenticate and join the channel
     socket.send(`PASS oauth:${config.oAuth}`);
     socket.send(`NICK ${config.nick}`);
-    socket.send(`JOIN #${config.channel}`);
+    socket.send(`JOIN #${channel}`);
   
     // sendMessage("Bot started!");
   });
@@ -96,7 +111,7 @@ function connect() {
 
 function sendMessage(message) {
   console.log(`Sending the message "${message}"`);
-  socket.send(`PRIVMSG #${config.channel} :${message}`);
+  socket.send(`PRIVMSG #${channel} :${message}`);
 }
 
 
@@ -110,8 +125,8 @@ function onMessage(event) {
     const contents = data.substring(data.indexOf(":", data.indexOf("PRIVMSG")) + 1).trim();
 
     if(contents.startsWith("!")) {
-      const response = handleCommand( contents);
-      sendMessage(response);
+      const response = handleCommand(contents);
+      if(response) sendMessage(response);
     }
   }
 }
@@ -163,13 +178,44 @@ function handleCommand(command) {
         return `The stream will start in ${formatTimeSpan(streamStartTime - Date.now())}`;
       }
     
+    case "cw":
+    case "cws":
+    case "content warning":
+    case "content warnings":
+    case "contentwarning":
+    case "contentwarnings":
+    case "tw":
+    case "tws":
+    case "trigger warning":
+    case "trigger warnings":
+    case "triggerwarning":
+    case "triggerwarnings":
+      if(currentGameIndex < 0) {
+        return `The stream will start in ${formatTimeSpan(streamStartTime - Date.now())}`;
+      } else if (currentGameIndex >= games.length) {
+        return `The stream is over. ${vodResponse}`;
+      } else {
+        const game = games[currentGameIndex];
+        const contentWarnings = game.contentWarnings;
+
+        if(contentWarnings) {
+          return `This game of ${game.name} has the following content warnings: ${contentWarnings}`;
+        } else {
+          return `There were no content warnings specified for this game of ${game.name}`;
+        }
+      }
+    
     case "help":
+    case "command":
+    case "commands":
       return `You can use one of the following commands: ${commandsList}`;
     
     default:
       const response = staticCommandLookup[command];
       if(response) {
         return response;
+      } else if(exclamationMarksRegex.test(command)) {
+        return "!".repeat(Math.min(command.length * 2, 32));
       } else {
         return `I did not recognize the following command: "${command}", try one of these: ${commandsList}`;
       }
@@ -179,9 +225,10 @@ function handleCommand(command) {
 
 function describeGame(game, willTense) {
   const gameAndLink = game.link ? `${game.name} which you can find over at ${game.link}` : game.name;
-  const playersDescription = `${game.players.slice(0, -1).map(describePlayer).join(", ")} and ${describePlayer(game.players.at(-1))}`
+  const playersDescription = `${game.players.slice(0, -1).map(describePlayer).join(", ")} and ${describePlayer(game.players.at(-1))}`;
+  const contentWarnings = game.contentWarnings ? ` This game has the following content warnings: ${game.contentWarnings}` : "";
 
-  return `${gameAndLink} and ${willTense} facilitated by ${describePlayer(game.facilitator)} and joined by ${playersDescription}`;
+  return `${gameAndLink} and ${willTense} facilitated by ${describePlayer(game.facilitator)} who is joined by ${playersDescription}.${contentWarnings}`;
 }
 
 
@@ -195,16 +242,18 @@ function formatTimeSpan(span) {
   const hours = Math.floor((span / hour) % 24);
   const minutes = Math.ceil(( span / minute ) % 60);
 
+  const minutesText = minutes == 1 ? `1 minute` : `${minutes} minutes`;
+
   if(days > 1) {
-    return `${days} days, ${hours} hours and ${minutes} minutes`;
+    return `${days} days, ${hours} hours and ${minutesText}`;
   } else if(days == 1) {
-    return `1 day, ${hours} hours and ${minutes} minutes`;
+    return `1 day, ${hours} hours and ${minutesText}`;
   } else if(hours > 1) {
-    return `${hours} hours and ${minutes} minutes`
+    return `${hours} hours and ${minutesText}`;
   } else if(hours == 1) {
-    return `1 hour and ${minutes} minutes`
-  }  else {
-    return `${minutes} minutes`
+    return `1 hour and ${minutesText}`;
+  } else {
+    return minutesText;
   }
 }
 
