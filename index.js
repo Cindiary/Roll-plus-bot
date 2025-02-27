@@ -20,7 +20,7 @@ const commandPeriod = config.commandPeriod * second;
 /*/
 
 // Alternate settings for testing
-const channel = "cindi_";
+const channel = "rollPlusBondBot";
 const gameDuration = 30 * second;
 const streamStartTime = Date.now() + gameDuration;
 const commandPeriod = 30 * second;
@@ -211,7 +211,7 @@ function handleCommand(command) {
       return `You can use one of the following commands: ${commandsList}`;
     
     default:
-      const response = staticCommandLookup[command];
+      const response = staticCommandLookup[command.toLowerCase()];
       if(response) {
         return response;
       } else if(exclamationMarksRegex.test(command)) {
@@ -226,9 +226,9 @@ function handleCommand(command) {
 function describeGame(game, willTense) {
   const gameAndLink = game.link ? `${game.name} which you can find over at ${game.link}` : game.name;
   const playersDescription = `${game.players.slice(0, -1).map(describePlayer).join(", ")} and ${describePlayer(game.players.at(-1))}`;
-  const contentWarnings = game.contentWarnings ? ` This game has the following content warnings: ${game.contentWarnings}` : "";
+  const contentWarnings = game.contentWarnings ? `. This game has the following content warnings: ${game.contentWarnings}` : "";
 
-  return `${gameAndLink} and ${willTense} facilitated by ${describePlayer(game.facilitator)} who is joined by ${playersDescription}.${contentWarnings}`;
+  return `${gameAndLink} and ${willTense} facilitated by ${describePlayer(game.facilitator)} who is joined by ${playersDescription}${contentWarnings}`;
 }
 
 

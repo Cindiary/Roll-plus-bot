@@ -2,9 +2,11 @@
   
 1. Download or checkout the repository
 2. Copy `config example.json` file and rename it `config.json`
-3. Go over to https://twitchapps.com/tmi/, authorize it with the right Twitch account and copy over the api key into the `oAuth` field removing the `oath:` at the start
+3. Go over to https://twitchtokengenerator.com/, get a Bot Chat token with the right Twitch account and copy over the `Access Token` into the `oAuth` field.
 4. Go over to https://hammertime.cyou/ and input the start time for the stream and copy over the number (without any formatting) into the `streamStart` field
-5. Update the `static commands.csv`, `games.csv` and `players.csv` files, you can open these in Excel or any other spreadsheet program, make sure not to add or remove any columns (unless you also update the corresponding code)
+5. Update the `static commands.csv`, `games.csv` and `players.csv` files, you can open these in Excel or any other spreadsheet program, make sure not to add or remove any columns (unless you also update the corresponding code).
+Make sure to use the right format (csv with `;` as a separator) when saving the file.
+Also the csv parser is very basic so please do not put the `;` character in any field.
 
 # Running the bot
 
