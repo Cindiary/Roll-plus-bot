@@ -1,91 +1,89 @@
 Game Nr;Facilitator;Name;Pronouns
-1;TRUE;HB;they/them
-1;FALSE;Devin;they/he
-1;FALSE;Remus;he/they
-1;FALSE;Sean;they/any
-1;FALSE;Jenna;She/Her
-2;TRUE;Halceon/Hal;he/they
+1;TRUE;devin / @devindecibel;they/he
+1;FALSE;hunter / @hunter5;Any
+1;FALSE;Bunnie (bunniepet on Twitch);She/They
+1;FALSE;dov;she/her
+2;TRUE;Halceon;he/they
 2;FALSE;Jamie;she/her
-2;FALSE;Twice;they/it
-2;FALSE;Ian;he/him
-2;FALSE;Cindi;she/her
-3;TRUE;Jamie;she/her
-3;FALSE;Cindy;she/her
-3;FALSE;ili;she/her
-3;FALSE;Cipher (or Kellin);they/she
-3;FALSE;Adela;she/her
-3;FALSE;Rose;she/they
-4;TRUE;Ciri;She/Her
-4;FALSE;Dov;she/her
-4;FALSE;iver;she/her
-4;FALSE;Debbie-Jo/Jo/Joey;
-4;FALSE;Halceon/Hal;he/they
-5;TRUE;Jenna;She/Her
-5;FALSE;Jack;He/Him
-5;FALSE;Cinnamon;He/Any
-5;FALSE;Mokka;they/them
-5;FALSE;Wren;they/it
-6;TRUE;Anna;she / her
-6;FALSE;Polt;she/her
-6;FALSE;Wren;she/they
-6;FALSE;Fae;Any
-7;TRUE;Cinnamon;He/any
-7;FALSE;Bunnie;She/They/Any
-7;FALSE;Denghazi;He/Him
-7;FALSE;HB;they/them
-7;FALSE;Devin;they/he
-8;TRUE;Yuri;they/them
-8;FALSE;Debbie-Jo/Jo/Joey;
-8;FALSE;Aoife;they/she
-8;FALSE;ili;she/her
-8;FALSE;Clay;he/they
-9;TRUE;Twice;they/it
-9;FALSE;Ian;he/him
-9;FALSE;Neon;they/ them
-9;FALSE;Quinn;she/it
-9;FALSE;Ciri;She/Her
+2;FALSE;Mokka;they/them
+2;FALSE;Cindy;she/her
+2;FALSE;ili;she/her
+3;TRUE;Rumda;She/Fae 
+3;FALSE;Miranda;She/Her
+3;FALSE;Alex;he/him
+3;FALSE;Sean;they/any
+3;FALSE;Ash;Any pronouns
+3;FALSE;Jake;He/Him
+4;TRUE;Cindi;she/her
+4;FALSE;Anna;she / her
+4;FALSE;Clay or Mark;he/they
+4;FALSE;Ian;he/him
+5;TRUE;Science Bird;they/them
+5;FALSE;Celina;she/her
+5;FALSE;Jake;he/him
+5;FALSE;Monica;she/her
+6;TRUE;Emily;she/her
+6;FALSE;Bob;they/them
+6;FALSE;Ani;she/any
+6;FALSE;Grace;she/her
+6;FALSE;Sean;they/any
+7;TRUE;Jenna;She/Her
+7;FALSE;Mitchell;he\him
+7;FALSE;Remus;he/they
+7;FALSE;Moor;they/them
+7;FALSE;Twice;they/it
+8;TRUE;Jamie;she/her
+8;FALSE;Clay or Mark;he/they
+8;FALSE;Gumbo;they/them
+8;FALSE;Ian;he/him
+8;FALSE;Rumda;She/Fae
+9;TRUE;Aoife;They/She
+9;FALSE;Cindy;she/her
+9;FALSE;Neon;they/them
+9;FALSE;Rosetta;She/They/Xe
+9;FALSE;Rumda ;She/Fae
 10;TRUE;Jake;he/him
-10;FALSE;Science Bird;They/Them
-10;FALSE;Rosetta;Xe/Xym/Xyr
-10;FALSE;Hunter;They/Them
-10;FALSE;Adam;He/Him
-10;FALSE;Sean;they/any
-11;TRUE;Wren;they/it
-11;FALSE;Si;he/him
-11;FALSE;Georgie Bats ;ey/em,he/him,ze/zir
-11;FALSE;Jenna;She/Her
-11;FALSE;Grace;she/her
-11;FALSE;Clay;he/they
-12;TRUE;Devin;they/he
-12;FALSE;Rose;She/They
-12;FALSE;salt;xe/he
-12;FALSE;Margaret;she/her
-12;FALSE;Ali;They/He
-13;TRUE;Remus;he/they
-13;FALSE;Reid;they/he
-13;FALSE;Bunnie;She/They/Any
-13;FALSE;iver;she/her
-13;FALSE;Rumda;She/Fae
-14;TRUE;Emily;she/her
-14;FALSE;Rumda;She/Fae
-14;FALSE;Mari;ey/em
-14;FALSE;Mokka;they/them
-14;FALSE;Hunter;they/them
-15;TRUE;Fi T. Hazard (Fi!);She/Her
-15;FALSE;Austin;he/him
-15;FALSE;Adam;He/They
-15;FALSE;Artie;He/Him
-15;FALSE;Ian;he/him
-16;TRUE;Quinn;she/it
-16;FALSE;Alex;he/him
-16;FALSE;Cindi;she/her
-16;FALSE;Clay;he/they
-16;FALSE;Andrea;she/her
-17;TRUE;Georgie Bats ;ey/em, he/him, ze/zir
-17;FALSE;Sam;they/he
-17;FALSE;brandon;he/they
-17;FALSE;Alice;she/her
-18;TRUE;Zero;he/him
-18;FALSE;Anthony;he/him
-18;FALSE;coffee;they/them
-18;FALSE;Nicole;she/her
+10;FALSE;Devon;she/her
+10;FALSE;Jack;he/him
+10;FALSE;Zack/ @Chimeraaart.bsky.social;he/him
+10;FALSE;Margaret;she/her
+11;TRUE;Fi T Hazard;
+11;FALSE;Monica;she/her
+11;FALSE;Sabriel;
+11;FALSE;Artie;
+11;FALSE;reid;he/they
+12;TRUE;Gumbo;they/them
+12;FALSE;Nobody;
+12;FALSE;Zelda/ @thaneskeepgames.bsky.social;She/They
+12;FALSE;Morning @morningmeasure ;It/any
+12;FALSE;@foolinc;He/Him
+13;TRUE;Tallis;he/him
+13;FALSE;dov;she/her
+13;FALSE;salt;xe/he
+13;FALSE;Mitchell;he\him
+13;FALSE;Remus;he/they
+13;FALSE;jenna;
+14;TRUE;Alice;she/her
+14;FALSE;Maren;they/them
+14;FALSE;Adela;
+14;FALSE;Cindy;she/her
+14;FALSE;Halceon;he/they
+14;FALSE;Cindi;she/her
+15;TRUE;Adam;he/they
+15;FALSE;Mari;ey/em
+15;FALSE;Emily;she/her
+15;FALSE;Neon;they/them
+16;TRUE;Adam Bell;he/him
+16;FALSE;Mokka;they/them
+16;FALSE;ili;she/her
+16;FALSE;Anna;she / her
+16;FALSE;devin / @devindecibel;they/he
+17;TRUE;coffee (@ahcoffeebeans, all platforms);they/them
+17;FALSE;Ciri;She/Her
+17;FALSE;HB;they/them
+17;FALSE;Wren;she/they
+17;FALSE;Rose;She/Her
+18;TRUE;Ash;Any pronouns
+18;FALSE;Ali;he/they
+18;FALSE;Ian;he/him
+18;FALSE;Wren;she/they
