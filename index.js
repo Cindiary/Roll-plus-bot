@@ -13,7 +13,7 @@ const maxMessageLength = 500;
 const repeatingCommands = [ "!donate", "!game" ];
 
 // Add/Remove the first slash on the next line to switch between stream time (//*/) and test settings (/*/)
-/*/
+//*/
 
 const channel = config.channel; //The channel that the bot should operate in
 const streamStartTime = config.streamStart * second; //Epoch time that the stream starts, taken from https://hammertime.cyou/
