@@ -7,10 +7,13 @@ const second = 1000;
 const minute  = 60 * second;
 const hour = 60 * minute;
 
+const minMessageLength = 100;
+const maxMessageLength = 500;
+
 const repeatingCommands = [ "!donate", "!game" ];
 
 // Add/Remove the first slash on the next line to switch between stream time (//*/) and test settings (/*/)
-//*/
+/*/
 
 const channel = config.channel; //The channel that the bot should operate in
 const streamStartTime = config.streamStart * second; //Epoch time that the stream starts, taken from https://hammertime.cyou/
@@ -64,7 +67,7 @@ const staticCommands =
 const staticCommandLookup =
   Object.fromEntries(staticCommands.flatMap(command => command.altCommands.concat([ command.command ]).map(str => [ str.toLowerCase(), command.response ])));
 
-const vodResponse = staticCommandLookup["vod"];
+const vodResponse = staticCommandLookup["!vod"];
 
 const commandNames = [ "!game", "!next", "!previous", "!content warnings" ].concat(staticCommands.map(item => item.command));
 const commandsList = `${commandNames.slice(0, -1).join(", ")} or ${commandNames.at(-1)}`;
@@ -110,8 +113,21 @@ function connect() {
 }
 
 function sendMessage(message) {
-  console.log(`Sending the message "${message}"`);
-  socket.send(`PRIVMSG #${channel} :${message}`);
+  console.log(`Sending the message "${message} (length: ${message.length})"`);
+
+  if(message.length > maxMessageLength) {
+    var splitIndex = maxMessageLength;
+
+    for(char of [ " ", ".", "\n" ]) {
+      var index = message.lastIndexOf(char, maxMessageLength - 1);
+      if(index>=minMessageLength) splitIndex = index + 1;
+    }
+
+    sendMessage(message.substring(0, splitIndex).trim());
+    sendMessage(message.substring(splitIndex).trim());
+  } else {
+    socket.send(`PRIVMSG #${channel} :${message}`);
+  }
 }
 
 
