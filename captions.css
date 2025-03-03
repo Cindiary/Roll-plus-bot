@@ -1,0 +1,47 @@
+:root {
+  --background-color: #0008;
+  --text-color: white;
+  --font-size: 20px;
+}
+
+/*OBS default css*/
+body
+{ background-color: var(--background-color);
+  margin: 0px auto;
+  overflow: hidden;
+}
+
+/* Hide the channel name banner, timestamps and usernames */
+.Chat_channelName__O6KEu, .Chat_timestamp__nyBmU, .Chat_username__5fTg6
+{ display: none;
+}
+
+/* Set the text color to inherit to give it full opacity (streamkit overlay is hardcoded to be 60% opacity and set on the element so we have to use !important to overwrite it) */
+.Chat_messageText__k79m4
+{ color: var(--text-color) !important;
+  font-size: var(--font-size);
+}
+
+/* Increase the max height for a message in case it is really long (don't set it to none because it won't display the start of the message if we do so) */
+.Chat_message__P69ez {
+  max-height: 100vh;
+}
+
+/*Fill the width of the browser source*/
+.Chat_chatContainer__N0eOL
+{ width: 100%;
+  display: flex;
+}
+
+/*Fill the height of the browser source*/
+html, body, #root, .Chat_chatContainer__N0eOL
+{ height: 100%;
+}
+
+/* Make the messages fill the element without overflowing */
+.Chat_messages__afjga {
+  width: 100%;
+  height: auto;
+  padding: 8px; /* Make the padding a bit smaller */
+  background: none !important; /* Remove the default background */
+}

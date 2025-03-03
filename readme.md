@@ -1,3 +1,5 @@
+Hi! This is the source code for the Twitch bot for Roll +Bond's yearly anniversary stream and also has the css for the caption solution we're using (`captions.css`).
+
 # Configuring the Bot
   
 1. Download or checkout the repository
